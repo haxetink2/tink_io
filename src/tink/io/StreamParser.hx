@@ -42,7 +42,7 @@ abstract StreamParser<Result>(StreamParserObject<Result>) from StreamParserObjec
       if(chunk.length == 0) return Future.sync(Resume); // TODO: review this fix
       cursor.shift(chunk);
       
-      return Future.async(function(cb) {
+      return Future.irreversible(function(cb) {
         function next() {
           cursor.shift();
           var lastPos = cursor.currentPos;

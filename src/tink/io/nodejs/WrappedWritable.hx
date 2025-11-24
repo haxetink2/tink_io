@@ -17,7 +17,7 @@ class WrappedWritable {
     this.name = name;
     this.native = native;
     
-    this.ended = Future.async(function (cb) {
+    this.ended = Future.irreversible(function (cb) {
       native.once('end', function () cb(Success(false)));
       native.once('finish', function () cb(Success(false)));
       native.once('close', function () cb(Success(false)));
@@ -29,7 +29,7 @@ class WrappedWritable {
   public function end():Promise<Bool> {
     var didEnd = false;
     
-    ended.handle(function () didEnd = true).dissolve();
+    ended.handle(function () didEnd = true).cancel();
     
     if (didEnd)
       return false;
@@ -40,7 +40,7 @@ class WrappedWritable {
   }
   
   public function write(chunk:Chunk):Promise<Bool> 
-    return Future.async(function (cb) {
+    return Future.irreversible(function (cb) {
       if(chunk.length == 0) {
         cb(Success(true));
         return;
